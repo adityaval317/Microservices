@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  web:
+    hostname: host.docker.internal
+    build:
+      context: '.'
+      dockerfile: Dockerfile
+    image: adityaval317/loans:s1
+    ports:
+      - 8090:8090
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres

@@ -1,0 +1,37 @@
+spring:
+  #Database Configuration
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/postgres}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 20000
+      maximum-pool-size: 5
+  application:
+    name: loans
+  jpa:
+    properties:
+      hibernate:
+        default_schema: loans
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+  data:
+    rest:
+      base-path: /api
+
+
+#Swagger
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /swagger
+  api-docs:
+    enabled: true
+    path: /api-docs
+#Server Configuration
+server:
+  port: 8090
+  #servlet:
+    #context-path: /api
