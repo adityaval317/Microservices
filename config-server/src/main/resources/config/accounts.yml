@@ -1,0 +1,13 @@
+build:
+  version: 3.0
+
+accounts:
+  message: "Welcome to Accounts Microservice"
+  contactDetails:
+    name: Aditya
+    email: 5kKbY@example.com
+  onCallSupport:
+    name: Aditya
+    phone:
+      - 5555555555
+      - 5555555556

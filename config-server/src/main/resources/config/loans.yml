@@ -1,0 +1,13 @@
+build:
+  version: 1.0
+
+loans:
+  message: "Welcome to Loans Microservice"
+  contactDetails:
+    name: "Aditya"
+    email: "Aditya@qa.com"
+  onCallSupport:
+    name: "Aditya"
+    phone:
+      - 5555555543
+      - 5555555578

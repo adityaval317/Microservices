@@ -1,0 +1,13 @@
+build:
+  version: 2.0
+
+accounts:
+  message: "Welcome to Accounts QA Microservice"
+  contactDetails:
+    name: "Aditya QA"
+    email: "Aditya@qa.com"
+  onCallSupport:
+    name: "Aditya QA"
+    phone:
+      - 5555555543
+      - 5555555578

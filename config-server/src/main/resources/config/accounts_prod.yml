@@ -1,0 +1,13 @@
+build:
+  version: 1.0
+
+accounts:
+  message: "Welcome to Accounts PROD Microservice"
+  contactDetails:
+    name: "Aditya PROD"
+    email: "Aditya@prod.com"
+  onCallSupport:
+    name: "Aditya PROD"
+    phone:
+      - 6515555543
+      - 6515555578
