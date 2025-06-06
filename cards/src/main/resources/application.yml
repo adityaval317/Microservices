@@ -16,6 +16,12 @@ spring:
   data:
     rest:
       base-path: /api
+  config:
+    import:
+      - application_qa.yml
+      - application_prod.yml
+  profiles:
+    active: qa
 
 
 #Swagger
@@ -31,3 +37,16 @@ server:
   port: 9000
   #servlet:
     #context-path: /api
+
+loans:
+  message: "Welcome to Cards QA Microservice"
+  contactDetails:
+    name: "Aditya QA Cards"
+    email: "Aditya@qa.com"
+  onCallSupport:
+    name: "Aditya QA"
+    phone:
+      - 5555555543
+      - 5555555578
+build:
+  version: 2.0

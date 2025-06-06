@@ -21,6 +21,13 @@ spring:
     rest:
       base-path: /api
 
+  config:
+    import:
+      - application_qa.yml
+      - application_prod.yml
+  profiles:
+    active: qa
+
 
 #Swagger
 springdoc:
@@ -35,3 +42,17 @@ server:
   port: 8090
   #servlet:
     #context-path: /api
+
+build:
+  version: 1.0
+
+loans:
+  message: "Welcome to Loans Microservice"
+  contactDetails:
+    name: "Aditya"
+    email: "Aditya@qa.com"
+  onCallSupport:
+    name: "Aditya"
+    phone:
+      - 5555555543
+      - 5555555578

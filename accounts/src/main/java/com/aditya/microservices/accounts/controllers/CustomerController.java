@@ -1,10 +1,10 @@
-package com.aditya.microservices.loans.controllers;
+package com.aditya.microservices.accounts.controllers;
 
-import com.aditya.microservices.loans.dto.ContactInfoDetailsDto;
-import com.aditya.microservices.loans.dto.ErrorResponseDto;
-import com.aditya.microservices.loans.dto.LoanDto;
-import com.aditya.microservices.loans.dto.ResponseDto;
-import com.aditya.microservices.loans.service.ILoanService;
+import com.aditya.microservices.accounts.dto.AccountContactInfoDto;
+import com.aditya.microservices.accounts.dto.CustomerDto;
+import com.aditya.microservices.accounts.dto.ErrorResponseDto;
+import com.aditya.microservices.accounts.dto.ResponseDto;
+import com.aditya.microservices.accounts.service.ICustomerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -23,59 +23,57 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Loan CRUD APIs", description = "Loan CRUD APIs to create, update, delete and fetch loan details")
+@Tag(name = "Customer CRUD APIs", description = "Customer CRUD APIs to create, update, delete and fetch customer and account details")
 @RestController
-@RequestMapping(path="/loan", produces = {MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(path="/customer", produces = {MediaType.APPLICATION_JSON_VALUE})
 @AllArgsConstructor
 @Validated
-public class LoanController {
+public class CustomerController {
 
-    private ILoanService iLoanService;
+    private ICustomerService iCustomerService;
+
     private Environment env;
-    private ContactInfoDetailsDto contactInfoDetailsDto;
+
+    private AccountContactInfoDto accountContactInfoDto;
 
     @Autowired
-    public LoanController(ILoanService iLoanService, Environment env, ContactInfoDetailsDto contactInfoDetailsDto) {
-        this.iLoanService = iLoanService;
+    public CustomerController(ICustomerService iCustomerService, Environment env, AccountContactInfoDto accountContactInfoDto) {
+        this.iCustomerService = iCustomerService;
         this.env = env;
-        this.contactInfoDetailsDto = contactInfoDetailsDto;
+        this.accountContactInfoDto = accountContactInfoDto;
     }
 
     @Value("${build.version}")
     private String buildVersion;
 
-
     @PostMapping("")
-    @Operation(summary = "Create a new Loan", description = "Create a new loan")
-    @ApiResponse(responseCode = "201", description = "Loan created successfully")
-    public ResponseEntity<ResponseDto> createLoan(@RequestParam
-                                                  @Pattern(regexp = "^[0-9]{10}$", message = "Mobile Number should be 10 digits")
-                                                       String mobileNumber) {
-        iLoanService.createLoan(mobileNumber);
+    @Operation(summary = "Create a new customer", description = "Create a new customer and account")
+    @ApiResponse(responseCode = "201", description = "Customer created successfully")
+    public ResponseEntity<ResponseDto> createCustomer(@Valid @RequestBody CustomerDto customerDto) {
+        iCustomerService.createCustomer(customerDto);
         return new ResponseEntity<>(new ResponseDto(HttpStatus.CREATED.value(), HttpStatus.CREATED.name()), HttpStatus.CREATED);
     }
 
     @GetMapping("/fetch")
-    @Operation(summary = "Get customer and Account Details", description = "Get loan details using mobile number")
+    @Operation(summary = "Get customer and Account Details", description = "Get customer and account details using mobile number")
     @ApiResponse(responseCode = "200", description = "HTTP Status OK")
-    public ResponseEntity<LoanDto> getLoanUsingMobileNumber(
+    public ResponseEntity<CustomerDto> getCustomerUsingMobileNumber(
             @RequestParam
             @Pattern(regexp = "^[0-9]{10}$", message = "Mobile Number should be 10 digits")
             String mobileNumber) {
-
-        return new ResponseEntity<>(iLoanService.getLoanUsingMobileNumber(mobileNumber), HttpStatus.OK);
+        return new ResponseEntity<>(iCustomerService.getCustomerUsingMobileNumber(mobileNumber), HttpStatus.OK);
     }
 
     @PutMapping("/update")
-    @Operation(summary = "Update Loan details", description = "Update loan details")
+    @Operation(summary = "Update customer and account details", description = "Update customer and account details using mobile number")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "HTTP Status OK"),
             @ApiResponse(responseCode = "417",
                     description = "HTTP Status Expectation Failed",
                     content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
     })
-    public ResponseEntity<ResponseDto> updateLoan(@Valid @RequestBody LoanDto loanDto) {
-        boolean updated = iLoanService.updateLoan(loanDto);
+    public ResponseEntity<ResponseDto> updateCustomer(@Valid @RequestBody CustomerDto customerDto) {
+        boolean updated = iCustomerService.updateCustomer(customerDto);
         if (!updated) {
             return new ResponseEntity<>(new ResponseDto(HttpStatus.EXPECTATION_FAILED.value(), HttpStatus.EXPECTATION_FAILED.name()), HttpStatus.EXPECTATION_FAILED);
         }
@@ -83,18 +81,18 @@ public class LoanController {
     }
 
     @DeleteMapping("/delete")
-    @Operation(summary = "Delete Loan details", description = "Delete Loan details using loan number")
+    @Operation(summary = "Delete customer and account details", description = "Delete customer and account details using mobile number")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "HTTP Status OK"),
             @ApiResponse(responseCode = "417",
                     description = "HTTP Status Internal Server Error",
                     content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
     })
-    public ResponseEntity<ResponseDto> deleteLoan(
+    public ResponseEntity<ResponseDto> deleteCustomer(
             @RequestParam
-            @Pattern(regexp = "^[0-9]{10}$", message = "Loan Number should be 10 digits")
-            long loanNumber) {
-        boolean deleted = iLoanService.deleteLoanUsingLoanNumber(loanNumber);
+            @Pattern(regexp = "^[0-9]{10}$", message = "Mobile Number should be 10 digits")
+            String mobileNumber) {
+        boolean deleted = iCustomerService.deleteCustomerUsingMobileNumber(mobileNumber);
         if (!deleted) {
             return new ResponseEntity<>(new ResponseDto(HttpStatus.EXPECTATION_FAILED.value(), HttpStatus.EXPECTATION_FAILED.name()), HttpStatus.EXPECTATION_FAILED);
         }
@@ -116,9 +114,11 @@ public class LoanController {
     }
 
     @GetMapping("/support-info")
-    @Operation(summary="Get Support Contact Details", description="Get Support Contact details")
+    @Operation(summary = "Get Support Contact Details", description = "Get Support Contact Details")
     @ApiResponse(responseCode = "200", description = "HTTP Status OK")
-    public ResponseEntity<ContactInfoDetailsDto> getSupportContactDetails() {
-        return new ResponseEntity<>(contactInfoDetailsDto, HttpStatus.OK);
+    public ResponseEntity<AccountContactInfoDto> getSupportContactDetails() {
+        return new ResponseEntity<>(accountContactInfoDto, HttpStatus.OK);
+
     }
 }
+

@@ -1,10 +1,10 @@
-package com.aditya.microservices.loans.controllers;
+package com.aditya.microservices.cards.controllers;
 
-import com.aditya.microservices.loans.dto.ContactInfoDetailsDto;
-import com.aditya.microservices.loans.dto.ErrorResponseDto;
-import com.aditya.microservices.loans.dto.LoanDto;
-import com.aditya.microservices.loans.dto.ResponseDto;
-import com.aditya.microservices.loans.service.ILoanService;
+import com.aditya.microservices.cards.dto.ContactInfoDetailsDto;
+import com.aditya.microservices.cards.dto.ErrorResponseDto;
+import com.aditya.microservices.cards.dto.CardDto;
+import com.aditya.microservices.cards.dto.ResponseDto;
+import com.aditya.microservices.cards.service.ICardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -23,59 +23,60 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Loan CRUD APIs", description = "Loan CRUD APIs to create, update, delete and fetch loan details")
+@Tag(name = "Card CRUD APIs", description = "Card CRUD APIs to create, update, delete and fetch card details")
 @RestController
-@RequestMapping(path="/loan", produces = {MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(path="/card", produces = {MediaType.APPLICATION_JSON_VALUE})
 @AllArgsConstructor
 @Validated
-public class LoanController {
+public class CardController {
 
-    private ILoanService iLoanService;
+    private ICardService iCardService;
+
     private Environment env;
-    private ContactInfoDetailsDto contactInfoDetailsDto;
 
-    @Autowired
-    public LoanController(ILoanService iLoanService, Environment env, ContactInfoDetailsDto contactInfoDetailsDto) {
-        this.iLoanService = iLoanService;
-        this.env = env;
-        this.contactInfoDetailsDto = contactInfoDetailsDto;
-    }
+    private ContactInfoDetailsDto contactInfoDetailsDto;
 
     @Value("${build.version}")
     private String buildVersion;
 
+    @Autowired
+    public CardController(ICardService iCardService, Environment env, ContactInfoDetailsDto contactInfoDetailsDto) {
+        this.iCardService = iCardService;
+        this.env = env;
+        this.contactInfoDetailsDto = contactInfoDetailsDto;
+    }
 
     @PostMapping("")
-    @Operation(summary = "Create a new Loan", description = "Create a new loan")
-    @ApiResponse(responseCode = "201", description = "Loan created successfully")
-    public ResponseEntity<ResponseDto> createLoan(@RequestParam
+    @Operation(summary = "Create a new Card", description = "Create a new card")
+    @ApiResponse(responseCode = "201", description = "Card created successfully")
+    public ResponseEntity<ResponseDto> createCard(@RequestParam
                                                   @Pattern(regexp = "^[0-9]{10}$", message = "Mobile Number should be 10 digits")
                                                        String mobileNumber) {
-        iLoanService.createLoan(mobileNumber);
+        iCardService.createCard(mobileNumber);
         return new ResponseEntity<>(new ResponseDto(HttpStatus.CREATED.value(), HttpStatus.CREATED.name()), HttpStatus.CREATED);
     }
 
     @GetMapping("/fetch")
     @Operation(summary = "Get customer and Account Details", description = "Get loan details using mobile number")
     @ApiResponse(responseCode = "200", description = "HTTP Status OK")
-    public ResponseEntity<LoanDto> getLoanUsingMobileNumber(
+    public ResponseEntity<CardDto> getCardUsingMobileNumber(
             @RequestParam
             @Pattern(regexp = "^[0-9]{10}$", message = "Mobile Number should be 10 digits")
             String mobileNumber) {
 
-        return new ResponseEntity<>(iLoanService.getLoanUsingMobileNumber(mobileNumber), HttpStatus.OK);
+        return new ResponseEntity<>(iCardService.getCardUsingMobileNumber(mobileNumber), HttpStatus.OK);
     }
 
     @PutMapping("/update")
-    @Operation(summary = "Update Loan details", description = "Update loan details")
+    @Operation(summary = "Update Card details", description = "Update Card details")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "HTTP Status OK"),
             @ApiResponse(responseCode = "417",
                     description = "HTTP Status Expectation Failed",
                     content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
     })
-    public ResponseEntity<ResponseDto> updateLoan(@Valid @RequestBody LoanDto loanDto) {
-        boolean updated = iLoanService.updateLoan(loanDto);
+    public ResponseEntity<ResponseDto> updateCard(@Valid @RequestBody CardDto cardDto) {
+        boolean updated = iCardService.updateCard(cardDto);
         if (!updated) {
             return new ResponseEntity<>(new ResponseDto(HttpStatus.EXPECTATION_FAILED.value(), HttpStatus.EXPECTATION_FAILED.name()), HttpStatus.EXPECTATION_FAILED);
         }
@@ -83,7 +84,7 @@ public class LoanController {
     }
 
     @DeleteMapping("/delete")
-    @Operation(summary = "Delete Loan details", description = "Delete Loan details using loan number")
+    @Operation(summary = "Delete Card details", description = "Delete Card details using mobile number")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "HTTP Status OK"),
             @ApiResponse(responseCode = "417",
@@ -92,9 +93,9 @@ public class LoanController {
     })
     public ResponseEntity<ResponseDto> deleteLoan(
             @RequestParam
-            @Pattern(regexp = "^[0-9]{10}$", message = "Loan Number should be 10 digits")
-            long loanNumber) {
-        boolean deleted = iLoanService.deleteLoanUsingLoanNumber(loanNumber);
+            @Pattern(regexp = "^[0-9]{10}$", message = "Mobile Number should be 10 digits")
+            String mobileNumber) {
+        boolean deleted = iCardService.deleteCardUsingMobileNumber(mobileNumber);
         if (!deleted) {
             return new ResponseEntity<>(new ResponseDto(HttpStatus.EXPECTATION_FAILED.value(), HttpStatus.EXPECTATION_FAILED.name()), HttpStatus.EXPECTATION_FAILED);
         }
@@ -102,14 +103,14 @@ public class LoanController {
     }
 
     @GetMapping("/build/version")
-    @Operation(summary = "Get Build Version", description = "Get Build Version")
+    @Operation(summary="Get Build Version", description = "Get Build Version")
     @ApiResponse(responseCode = "200", description = "HTTP Status OK")
     public ResponseEntity<String> getBuildVersion() {
         return new ResponseEntity<>(buildVersion, HttpStatus.OK);
     }
 
     @GetMapping("/java/version")
-    @Operation(summary = "Get Java Version", description = "Get Java Version")
+    @Operation(summary="Get Java Version", description = "Get Java Version")
     @ApiResponse(responseCode = "200", description = "HTTP Status OK")
     public ResponseEntity<String> getJavaVersion() {
         return new ResponseEntity<>(env.getProperty("JAVA_HOME"), HttpStatus.OK);

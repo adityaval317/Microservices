@@ -17,6 +17,12 @@ spring:
   data:
     rest:
       base-path: /api
+  config:
+    import:
+      - application_qa.yml
+      - application_prod.yml
+  profiles:
+    active: qa
 #Swagger
 springdoc:
   swagger-ui:
@@ -30,3 +36,17 @@ server:
   port: 8081
   #servlet:
     #context-path: /api
+
+build:
+  version: 3.0
+
+accounts:
+  message: "Welcome to Accounts Microservice"
+  contactDetails:
+    name: Aditya
+    email: 5kKbY@example.com
+  onCallSupport:
+    name: Aditya
+    phone:
+      - 5555555555
+      - 5555555556
