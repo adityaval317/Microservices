@@ -1,7 +1,7 @@
 spring:
   #Database Configuration
   datasource:
-    url: jdbc:postgresql://${DB_HOST:host.docker.internal}:5432/${DB_NAME:postgres}
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/${DB_NAME:postgres}
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:postgres}
   application:
@@ -16,14 +16,22 @@ spring:
   data:
     rest:
       base-path: /api
-  config:
-    import:
-      - application_qa.yml
-      - application_prod.yml
   profiles:
-    active: qa
+    active: prod
+  config:
+    import: optional:configserver:http://localhost:8071/
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
 
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 #Swagger
 springdoc:
   swagger-ui:
@@ -38,13 +46,13 @@ server:
   #servlet:
     #context-path: /api
 
-loans:
-  message: "Welcome to Cards QA Microservice"
+cards:
+  message: "Welcome to Cards Local Microservice"
   contactDetails:
-    name: "Aditya QA Cards"
-    email: "Aditya@qa.com"
+    name: "Aditya Local Cards"
+    email: "Aditya@Local.com"
   onCallSupport:
-    name: "Aditya QA"
+    name: "Aditya Local"
     phone:
       - 5555555543
       - 5555555578

@@ -17,12 +17,21 @@ spring:
   data:
     rest:
       base-path: /api
-  config:
-    import:
-      - application_qa.yml
-      - application_prod.yml
   profiles:
-    active: qa
+    active: prod
+  config:
+    import: optional:configserver:http://localhost:8071/
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 #Swagger
 springdoc:
   swagger-ui:

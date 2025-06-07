@@ -1,6 +1,36 @@
 spring:
   application:
-    name:config-server
+    name: configserver
+  config:
+    import: optional:configserver:${user.home}/spring-cloud-config
+  profiles:
+    #active: native
+    active: git
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/adityaval317/config.git
+          default-label: main
+          timeout: 5
+          clone-on-start: true
+          force-pull: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
 
+        #native:
+          #search-locations: classpath:/config
+          #search-locations: file:///C://DEV//Workspace//Spring//microservices//config-server//src//main//resources
+encrypt:
+  key: 45D81EC1EF61DF9AD8D3E5BB397F9
 server:
   port: 8071
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+

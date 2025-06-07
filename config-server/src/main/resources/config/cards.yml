@@ -1,10 +1,10 @@
 cards:
-  message: "Welcome to Cards QA Microservice"
+  message: "Welcome to Cards Microservice"
   contactDetails:
-    name: "Aditya QA Cards"
-    email: "Aditya@qa.com"
+    name: "Aditya Cards"
+    email: "Aditya@local.com"
   onCallSupport:
-    name: "Aditya QA"
+    name: "Aditya Local"
     phone:
       - 5555555543
       - 5555555578
