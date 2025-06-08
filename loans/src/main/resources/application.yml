@@ -21,7 +21,7 @@ spring:
     rest:
       base-path: /api
   config:
-    import: optional:configserver:http://localhost:8071/
+    import: ${SPRING_CONFIG_IMPORT:configserver:http://localhost:8071/}
   profiles:
     active: prod
   rabbitmq:

@@ -20,9 +20,9 @@ spring:
   profiles:
     active: prod
   config:
-    import: optional:configserver:http://localhost:8071/
+    import: ${SPRING_CONFIG_IMPORT:configserver:http://localhost:8071/}
   rabbitmq:
-    host: localhost
+    host: ${SPRING_RABBITMQ_HOST:localhost}
     port: 5672
     username: guest
     password: guest

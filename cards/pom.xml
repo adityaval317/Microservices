@@ -154,7 +154,7 @@
 						<image>eclipse-temurin:21-jre</image>
 					</from>
 					<to>
-						<image>adityaval317/${project.artifactId}:s2</image>
+						<image>adityaval317/${project.artifactId}:s6</image>
 					</to>
 					<container>
 						<jvmFlags>
@@ -165,6 +165,9 @@
 							<DB_NAME>postgres</DB_NAME>
 							<DB_USERNAME>postgres</DB_USERNAME>
 							<DB_PASSWORD>postgres</DB_PASSWORD>
+							<SPRING_DATASOURCE_URL>jdbc:postgresql://host.docker.internal:5432/postgres</SPRING_DATASOURCE_URL>
+							<SPRING_DATASOURCE_USERNAME>postgres</SPRING_DATASOURCE_USERNAME>
+							<SPRING_DATASOURCE_PASSWORD>postgres</SPRING_DATASOURCE_PASSWORD>
 						</environment>
 					</container>
 				</configuration>
