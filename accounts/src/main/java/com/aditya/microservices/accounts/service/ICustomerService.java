@@ -1,5 +1,6 @@
 package com.aditya.microservices.accounts.service;
 
+import com.aditya.microservices.accounts.dto.CustomerDetailsDto;
 import com.aditya.microservices.accounts.dto.CustomerDto;
 
 public interface ICustomerService {
@@ -10,4 +11,6 @@ public interface ICustomerService {
     public boolean updateCustomer(CustomerDto customerDto);
 
     public boolean deleteCustomerUsingMobileNumber(String mobileNumber);
+
+    public CustomerDetailsDto fetchCustomerDetailsUsingMobileNumber(String mobileNumber);
 }

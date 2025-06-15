@@ -1,9 +1,6 @@
 package com.aditya.microservices.accounts.controllers;
 
-import com.aditya.microservices.accounts.dto.AccountContactInfoDto;
-import com.aditya.microservices.accounts.dto.CustomerDto;
-import com.aditya.microservices.accounts.dto.ErrorResponseDto;
-import com.aditya.microservices.accounts.dto.ResponseDto;
+import com.aditya.microservices.accounts.dto.*;
 import com.aditya.microservices.accounts.service.ICustomerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -119,6 +116,18 @@ public class CustomerController {
     public ResponseEntity<AccountContactInfoDto> getSupportContactDetails() {
         return new ResponseEntity<>(accountContactInfoDto, HttpStatus.OK);
 
+    }
+
+    @GetMapping("/fetch-customer-details")
+    @Operation(summary="Fetch Customer Details with Accounts, Cards and Loans Information",
+            description="Fetch Customer Details with Accounts, Cards and Loans Information")
+    @ApiResponse(responseCode = "200", description = "HTTP Status OK")
+    public ResponseEntity<CustomerDetailsDto> fetchCustomerDetails(
+            @RequestParam
+            @Pattern(regexp = "^[0-9]{10}$", message = "Mobile Number should be 10 digits")
+            String mobileNumber) {
+        CustomerDetailsDto customerDetailsDto = iCustomerService.fetchCustomerDetailsUsingMobileNumber(mobileNumber);
+        return new ResponseEntity<>(customerDetailsDto, HttpStatus.OK);
     }
 }
 

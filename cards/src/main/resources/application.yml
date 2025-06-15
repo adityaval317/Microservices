@@ -29,12 +29,18 @@ spring:
     username: guest
     password: guest
 
-
+#Actuator Configuration
 management:
   endpoints:
     web:
       exposure:
         include: "*"
+  info:
+    env:
+      enabled: true
+  endpoint:
+    shutdown:
+      access: unrestricted
 #Swagger
 springdoc:
   swagger-ui:
@@ -61,3 +67,20 @@ cards:
       - 5555555578
 build:
   version: 2.0
+
+#Eureka Configuration
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    fetchRegistry: true
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://${SPRING_EUREKA_SERVER:localhost}:8070/eureka
+
+#Info Configuration
+info:
+  app:
+    name: cards
+    description: Cards Microservice
+    version: 1.0.0

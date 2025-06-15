@@ -1,7 +1,6 @@
 package com.aditya.microservices.accounts.service.impl;
 
-import com.aditya.microservices.accounts.dto.AccountDto;
-import com.aditya.microservices.accounts.dto.CustomerDto;
+import com.aditya.microservices.accounts.dto.*;
 import com.aditya.microservices.accounts.entities.Account;
 import com.aditya.microservices.accounts.entities.Customer;
 import com.aditya.microservices.accounts.exception.CustomerAlreadyExistsException;
@@ -11,10 +10,13 @@ import com.aditya.microservices.accounts.mapper.CustomerMapper;
 import com.aditya.microservices.accounts.repositories.AccountRepository;
 import com.aditya.microservices.accounts.repositories.CustomerRepository;
 import com.aditya.microservices.accounts.service.ICustomerService;
+import com.aditya.microservices.accounts.service.client.CardsFeignClient;
+import com.aditya.microservices.accounts.service.client.LoansFeignClient;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
@@ -25,11 +27,19 @@ public class CustomerServiceImpl implements ICustomerService {
 
     private CustomerRepository customerRepository;
     private AccountRepository accountRepository;
+    private CardsFeignClient cardsFeignClient;
+    private LoansFeignClient loansFeignClient;
+
 
     @Autowired
-    public CustomerServiceImpl(CustomerRepository customerRepository, AccountRepository accountRepository) {
+    public CustomerServiceImpl(CustomerRepository customerRepository,
+                               AccountRepository accountRepository,
+                               CardsFeignClient cardsFeignClient,
+                                 LoansFeignClient loansFeignClient) {
         this.customerRepository = customerRepository;
         this.accountRepository = accountRepository;
+        this.cardsFeignClient = cardsFeignClient;
+        this.loansFeignClient = loansFeignClient;
     }
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -97,5 +107,15 @@ public class CustomerServiceImpl implements ICustomerService {
         }
         return deleted;
     }
+
+    @Override
+    public CustomerDetailsDto fetchCustomerDetailsUsingMobileNumber(String mobileNumber) {
+        CustomerDto customerDto = getCustomerUsingMobileNumber(mobileNumber);
+        CardDto cardDto= cardsFeignClient.getCardUsingMobileNumber(mobileNumber).getBody();
+        LoanDto loanDto = loansFeignClient.getLoanUsingMobileNumber(mobileNumber).getBody();
+
+        return new CustomerDetailsDto(customerDto, cardDto, loanDto);
+    }
+
 
 }
