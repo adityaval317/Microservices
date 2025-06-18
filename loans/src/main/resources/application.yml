@@ -36,10 +36,18 @@ management:
     web:
       exposure:
         include: "*"
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
   info:
     env:
       enabled: true
   endpoint:
+    health:
+      probes:
+        enabled: true
     shutdown:
       access: unrestricted
 
@@ -88,3 +96,10 @@ loans:
     phone:
       - 5555555543
       - 5555555578
+
+logging:
+  level:
+    com:
+      aditya:
+        microservices:
+          loans: DEBUG

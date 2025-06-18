@@ -109,12 +109,21 @@ public class CustomerServiceImpl implements ICustomerService {
     }
 
     @Override
-    public CustomerDetailsDto fetchCustomerDetailsUsingMobileNumber(String mobileNumber) {
+    public CustomerDetailsDto fetchCustomerDetailsUsingMobileNumber(String mobileNumber, String correlationId) {
         CustomerDto customerDto = getCustomerUsingMobileNumber(mobileNumber);
-        CardDto cardDto= cardsFeignClient.getCardUsingMobileNumber(mobileNumber).getBody();
-        LoanDto loanDto = loansFeignClient.getLoanUsingMobileNumber(mobileNumber).getBody();
-
-        return new CustomerDetailsDto(customerDto, cardDto, loanDto);
+        CustomerDetailsDto customerDetailsDto = new CustomerDetailsDto();
+        customerDetailsDto.setCustomerDto(customerDto);
+        ResponseEntity<CardDto> cardResponseEntity = cardsFeignClient.getCardUsingMobileNumber(correlationId, mobileNumber);
+        if(null!=cardResponseEntity) {
+            CardDto cardDto = cardResponseEntity.getBody();
+            customerDetailsDto.setCardDto(cardDto);
+        }
+        ResponseEntity<LoanDto> loanResponseEntity = loansFeignClient.getLoanUsingMobileNumber(correlationId, mobileNumber);
+        if(null!=loanResponseEntity) {
+            LoanDto loanDto = loanResponseEntity.getBody();
+            customerDetailsDto.setLoanDto(loanDto);
+        }
+        return customerDetailsDto;
     }
 
 

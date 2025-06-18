@@ -1,0 +1,61 @@
+spring:
+  #Database Configuration
+  application:
+    name: gateway-server
+  config:
+    import: ${SPRING_CONFIG_IMPORT:configserver:http://localhost:8071/}
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    port: 5672
+    username: guest
+    password: guest
+  cloud:
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: false
+              lowerCaseServiceId: true
+          httpclient:
+            connect-timeout: 1000
+            response-timeout: 2s
+
+#Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  info:
+    env:
+      enabled: true
+  endpoint:
+    gateway:
+      access: unrestricted
+
+#Info Configuration
+info:
+  app:
+    name: gateway-server
+    description: Gateway Server Microservice
+    version: 1.0.0
+
+logging:
+  level:
+    com:
+      aditya:
+        microservices:
+          gateway_server:
+            filters: DEBUG
+
+resilience4j.circuitbreaker:
+  configs:
+    default:
+      slidingWindowSize: 10
+      minimumNumberOfCalls: 5
+      permittedNumberOfCallsInHalfOpenState: 3
+      waitDurationInOpenState: 10000
+      failureRateThreshold: 50
+      eventConsumerBufferSize: 10
+

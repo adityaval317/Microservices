@@ -2,6 +2,7 @@ package com.aditya.microservices.accounts.controllers;
 
 import com.aditya.microservices.accounts.dto.*;
 import com.aditya.microservices.accounts.service.ICustomerService;
+import io.github.resilience4j.retry.annotation.Retry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,6 +12,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -26,6 +29,8 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 @Validated
 public class CustomerController {
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private ICustomerService iCustomerService;
 
@@ -96,11 +101,18 @@ public class CustomerController {
         return new ResponseEntity<>(new ResponseDto(HttpStatus.OK.value(), HttpStatus.OK.name()), HttpStatus.OK);
     }
 
+    @Retry(name="getBuildVersion", fallbackMethod = "getBuildVersionFallback")
     @GetMapping("/build/version")
     @Operation(summary = "Get Build Version", description = "Get Build Version")
     @ApiResponse(responseCode = "200", description = "HTTP Status OK")
     public ResponseEntity<String> getBuildVersion() {
+        logger.debug("getBuildVersion method invoked");
         return new ResponseEntity<>(buildVersion, HttpStatus.OK);
+    }
+
+    public ResponseEntity<String> getBuildVersionFallback(Throwable throwable) {
+        logger.debug("getBuildVersionFallback method invoked");
+        return new ResponseEntity<>("0.0.9", HttpStatus.OK);
     }
 
     @GetMapping("/java/version")
@@ -123,10 +135,12 @@ public class CustomerController {
             description="Fetch Customer Details with Accounts, Cards and Loans Information")
     @ApiResponse(responseCode = "200", description = "HTTP Status OK")
     public ResponseEntity<CustomerDetailsDto> fetchCustomerDetails(
+            @RequestHeader("X-Correlation-Id") String correlationId,
             @RequestParam
             @Pattern(regexp = "^[0-9]{10}$", message = "Mobile Number should be 10 digits")
             String mobileNumber) {
-        CustomerDetailsDto customerDetailsDto = iCustomerService.fetchCustomerDetailsUsingMobileNumber(mobileNumber);
+        logger.debug("Customer Controller :: Correlation ID: {}", correlationId);
+        CustomerDetailsDto customerDetailsDto = iCustomerService.fetchCustomerDetailsUsingMobileNumber(mobileNumber, correlationId);
         return new ResponseEntity<>(customerDetailsDto, HttpStatus.OK);
     }
 }

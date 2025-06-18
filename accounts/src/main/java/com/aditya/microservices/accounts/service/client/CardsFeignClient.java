@@ -5,13 +5,15 @@ import jakarta.validation.constraints.Pattern;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient("cards")
+@FeignClient(name = "cards", fallback = CardsFeignFallback.class)
 public interface CardsFeignClient {
 
     @GetMapping(value = "/card/fetch", consumes = "application/json")
-    public ResponseEntity<CardDto> getCardUsingMobileNumber(@RequestParam String mobileNumber);
+    public ResponseEntity<CardDto> getCardUsingMobileNumber(@RequestHeader("X-Correlation-Id") String correlationId,
+            @RequestParam String mobileNumber);
 
 
 }

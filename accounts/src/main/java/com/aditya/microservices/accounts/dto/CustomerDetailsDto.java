@@ -3,9 +3,10 @@ package com.aditya.microservices.accounts.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
+@AllArgsConstructor @NoArgsConstructor
 @Schema(name="Customer Details Object", description = "Customer Details with Account, Card and Loan information")
 public class CustomerDetailsDto {
 
