@@ -2,6 +2,7 @@ package com.aditya.microservices.accounts.controllers;
 
 import com.aditya.microservices.accounts.dto.*;
 import com.aditya.microservices.accounts.service.ICustomerService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -118,8 +119,13 @@ public class CustomerController {
     @GetMapping("/java/version")
     @Operation(summary = "Get Java Version", description = "Get Java Version")
     @ApiResponse(responseCode = "200", description = "HTTP Status OK")
+    @RateLimiter(name="getJavaVersion", fallbackMethod = "getJavaVersionFallback")
     public ResponseEntity<String> getJavaVersion() {
         return new ResponseEntity<>(env.getProperty("JAVA_HOME"), HttpStatus.OK);
+    }
+
+    public ResponseEntity<String> getJavaVersionFallback(Throwable throwable) {
+        return new ResponseEntity<>("Java Version : 17", HttpStatus.OK);
     }
 
     @GetMapping("/support-info")
