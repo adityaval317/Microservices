@@ -22,7 +22,7 @@ spring:
             response-timeout: 2s
   data:
     redis:
-      host: ${SPRING_REDIS_HOST:localhost}
+      host: localhost
       port: 6379
       password: redispassword
       timeout: 1000ms
