@@ -49,6 +49,9 @@ management:
         enabled: true
     shutdown:
       access: unrestricted
+  metrics:
+    tags:
+      application: ${spring.application.name}
 #Swagger
 springdoc:
   swagger-ui:
