@@ -30,7 +30,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://localhost:7080/realms/master/protocol/openid-connect/certs
+          jwk-set-uri: http://localhost:8080/realms/master/protocol/openid-connect/certs
 
 #Actuator Configuration
 management:
@@ -62,6 +62,8 @@ logging:
         microservices:
           gateway_server:
             filters: DEBUG
+  pattern:
+    level: "%5p[${spring.application.name}, %X{trace_id}, %X{span_id}] %d{yyyy-MM-dd HH:mm:ss.SSS} - %m%n"
 
 resilience4j.circuitbreaker:
   configs:

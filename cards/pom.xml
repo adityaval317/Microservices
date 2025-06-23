@@ -36,6 +36,7 @@
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<spring-cloud.version>2025.0.0</spring-cloud.version>
 		<build.image.version>s1</build.image.version>
+		<otelVersion>2.16.0</otelVersion>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -53,6 +54,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.opentelemetry.javaagent</groupId>
+			<artifactId>opentelemetry-javaagent</artifactId>
+			<version>${otelVersion}</version>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.micrometer</groupId>

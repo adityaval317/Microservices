@@ -66,7 +66,7 @@ public class CardController {
             @RequestParam
             @Pattern(regexp = "^[0-9]{10}$", message = "Mobile Number should be 10 digits")
             String mobileNumber) {
-        logger.debug("Card Controller :: Correlation ID: {}", correlationId);
+        logger.debug("Card Controller Started fetching card details for mobile number: {}", mobileNumber);
         return new ResponseEntity<>(iCardService.getCardUsingMobileNumber(mobileNumber), HttpStatus.OK);
     }
 

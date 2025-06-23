@@ -66,7 +66,7 @@ public class LoanController {
             @RequestParam
             @Pattern(regexp = "^[0-9]{10}$", message = "Mobile Number should be 10 digits")
             String mobileNumber) {
-        logger.debug("Card Controller :: Correlation ID: {}", correlationId);
+        logger.debug("Loan Controller Started fetching loan details for mobile number: {}", mobileNumber);
         return new ResponseEntity<>(iLoanService.getLoanUsingMobileNumber(mobileNumber), HttpStatus.OK);
     }
 
