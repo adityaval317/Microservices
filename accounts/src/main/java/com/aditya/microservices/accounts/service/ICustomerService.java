@@ -13,4 +13,6 @@ public interface ICustomerService {
     public boolean deleteCustomerUsingMobileNumber(String mobileNumber);
 
     public CustomerDetailsDto fetchCustomerDetailsUsingMobileNumber(String mobileNumber, String correlationId);
+
+    public boolean updateCommunicationSent(int accountNumber);
 }

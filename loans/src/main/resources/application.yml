@@ -10,6 +10,13 @@ spring:
       maximum-pool-size: 5
   application:
     name: loans
+  cloud:
+    stream:
+      default-binder: kafka
+      kafka:
+        binder:
+          brokers:
+            - localhost:9092
   jpa:
     properties:
       hibernate:

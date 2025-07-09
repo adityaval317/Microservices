@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -29,17 +30,20 @@ public class CustomerServiceImpl implements ICustomerService {
     private AccountRepository accountRepository;
     private CardsFeignClient cardsFeignClient;
     private LoansFeignClient loansFeignClient;
+    private final StreamBridge streamBridge;
 
 
     @Autowired
     public CustomerServiceImpl(CustomerRepository customerRepository,
                                AccountRepository accountRepository,
                                CardsFeignClient cardsFeignClient,
-                                 LoansFeignClient loansFeignClient) {
+                               LoansFeignClient loansFeignClient,
+                               StreamBridge streamBridge) {
         this.customerRepository = customerRepository;
         this.accountRepository = accountRepository;
         this.cardsFeignClient = cardsFeignClient;
         this.loansFeignClient = loansFeignClient;
+        this.streamBridge = streamBridge;
     }
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -52,7 +56,20 @@ public class CustomerServiceImpl implements ICustomerService {
         Customer savedCustomer = customerRepository.save(customer);
 
         Account account = addNewAccount(savedCustomer);
-        accountRepository.save(account);
+        Account savedAccount = accountRepository.save(account);
+        sendCommunication(savedAccount, savedCustomer);
+    }
+
+    private void sendCommunication(Account account, Customer customer) {
+        logger.info("Sending communication for new account creation: {}", account.getAccountNumber());
+        AccountsMessageDto accountsMessageDto = new AccountsMessageDto(account.getAccountNumber(), customer.getName(), customer.getEmail(), customer.getMobileNumber());
+        logger.info("AccountsMessageDto: {}", accountsMessageDto);
+        var result = streamBridge.send("sendCommunication-out-0", accountsMessageDto);
+        if (result) {
+            logger.info("Communication sent successfully for account: {}", account.getAccountNumber());
+        } else {
+            logger.error("Failed to send communication for account: {}", account.getAccountNumber());
+        }
     }
 
     @Override
@@ -124,6 +141,23 @@ public class CustomerServiceImpl implements ICustomerService {
             customerDetailsDto.setLoanDto(loanDto);
         }
         return customerDetailsDto;
+    }
+
+    @Override
+    public boolean updateCommunicationSent(int accountNumber) {
+        boolean isUpdated = false;
+        Account account = accountRepository.findByAccountNumber(accountNumber).orElseThrow(
+                () -> new ResourceNotFoundException("Account", "accountNumber", String.valueOf(accountNumber))
+        );
+        if(account!=null) {
+            account.setCommunicationSent(true);
+            accountRepository.save(account);
+            isUpdated = true;
+            logger.info("Communication sent status updated for account number: {}", accountNumber);
+        } else {
+            logger.error("Account not found for account number: {}", accountNumber);
+        }
+        return isUpdated;
     }
 
 

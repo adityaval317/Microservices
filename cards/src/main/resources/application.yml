@@ -9,6 +9,13 @@ spring:
     password: ${SPRING_DATASOURCE_PASSWORD:postgres}
   application:
     name: cards
+  cloud:
+    stream:
+      default-binder: kafka
+      kafka:
+        binder:
+          brokers:
+            - localhost:9092
   jpa:
     properties:
       hibernate:

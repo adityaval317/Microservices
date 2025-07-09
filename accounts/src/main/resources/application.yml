@@ -25,12 +25,36 @@ spring:
     openfeign:
       circuitbreaker:
         enabled: true
+    function:
+      definition: updateCommunication
+    stream:
+      binders:
+        kafka:
+          type: kafka
+        rabbit:
+          type: rabbit
+      bindings:
+        updateCommunication-in-0:
+          destination: communication-sent
+          group: ${spring.application.name}
+          binder: rabbit
+        sendCommunication-out-0:
+          destination: send-communication
+          binder: rabbit
+        accountCreated-out-0:
+          destination: account-created
+          binder: kafka
+      default-binder: kafka
+      kafka:
+        binder:
+          brokers:
+            - localhost:9092
   rabbitmq:
     host: ${SPRING_RABBITMQ_HOST:localhost}
     port: 5672
     username: guest
     password: guest
-
+    connection-timeout: 10s
 #Actuator Configuration
 management:
   endpoints:

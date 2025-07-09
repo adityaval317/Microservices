@@ -31,4 +31,7 @@ public class Account extends BaseEntity {
 
     @Column(name="branch_address", nullable = false)
     private String branchAddress;
+
+    @Column(name="communication_sent")
+    private boolean communicationSent;
 }

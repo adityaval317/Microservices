@@ -95,17 +95,17 @@
 				<artifactId>jib-maven-plugin</artifactId>
 				<version>3.4.5</version>
 				<configuration>
-					<from>
-						<image>eclipse-temurin:21-jre</image>
-					</from>
+<!--					<from>-->
+<!--						<image>eclipse-temurin:21-jre</image>-->
+<!--					</from>-->
 					<to>
 						<image>adityaval317/${project.artifactId}:${build.image.version}</image>
 					</to>
-					<container>
-						<jvmFlags>
-							<jvmFlag>-Djava.security.egd=file:/dev/./urandom</jvmFlag>
-						</jvmFlags>
-					</container>
+<!--					<container>-->
+<!--						<jvmFlags>-->
+<!--							<jvmFlag>-Djava.security.egd=file:/dev/./urandom</jvmFlag>-->
+<!--						</jvmFlags>-->
+<!--					</container>-->
 				</configuration>
 			</plugin>
 		</plugins>
